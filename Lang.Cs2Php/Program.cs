@@ -15,14 +15,20 @@ namespace Lang.Cs2Php
         static void Main(string[] args)
         {
             AssemblySandbox.Init();
-            var showUsage = true;
             Console.Write("        ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("C# to Php");
             Console.ResetColor();
             Console.WriteLine(" compiler ver. {0}", typeof(Program).Assembly.GetName().Version);
             Console.WriteLine(" Lang.Php ver. {0}", typeof(RequiredTranslatorAttribute).Assembly.GetName().Version);
+            Do(args);
+            Console.WriteLine("press any key...");
+            Console.ReadKey();
+        }
 
+        private static void Do(string[] args)
+        {
+            var showUsage = true;
             try
             {
                 var processingContext = new ArgumentProcessingContext();
@@ -57,11 +63,23 @@ namespace Lang.Cs2Php
                     Console.WriteLine("   " + exception.Message + "\r\n");
                     exception = exception.InnerException;
                 }
-                if (showUsage)
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("Do you want to try again (Y/N)? ");
+                var key = Console.ReadKey();
+                if(key.KeyChar == 'Y' || key.KeyChar == 'y')
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write("Write your CSProject Path: ");
+                    args[0] = Console.ReadLine();
+                    Console.Write("Write your Destination Directory: ");
+                    args[1] = Console.ReadLine();
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Do(args);
+                }
+                else if (showUsage)
                     Usage();
             }
-            Console.WriteLine("press any key...");
-            Console.ReadKey();
         }
 
         private static void DoCompilation(ConfigData cfg, ref  bool showUsage)
